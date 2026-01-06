@@ -1,34 +1,42 @@
 {
+  // 컴파일러 옵션 설정 섹션
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
+    "target": "ES2017", // 컴파일된 자바스크립트의 목표 버전 설정 (ES2017)
+    "lib": ["dom", "dom.iterable", "esnext"], // 사용할 라이브러리 타입 정의
+    "allowJs": true, // 자바스크립트 파일도 함께 컴파일할지 여부
+    "skipLibCheck": true, // 라이브러리 파일의 타입 체크 생략 (빌드 속도 향상)
+    "strict": true, // 엄격한 타입 검사 활성화 (모든 엄격 모드 옵션 포함)
+    "noEmit": true, // 컴파일 결과물(js 등) 생성 안 함 (주로 타입 검사 용도)
+    "esModuleInterop": true, // CommonJS와 ES 모듈 간 호환성 지원
+    "module": "esnext", // 모듈 시스템 설정 (최신 ES 모듈 사용)
+    "moduleResolution": "bundler", // 모듈 해석 방식을 번들러 방식으로 지정
+    "resolveJsonModule": true, // JSON 파일을 모듈로 불러올 수 있게 함
+    "isolatedModules": true, // 각 파일을 독립된 모듈로 처리 (빠른 빌드에 도움)
+    "jsx": "react-jsx", // JSX 변환 방식 설정 (React 17+ 새로운 JSX 변환)
+    "incremental": true, // 증분 빌드 활성화 (변경된 파일만 다시 컴파일)
+    "strictNullChecks": true, // null과 undefined에 대한 엄격한 체크
+    "noUnusedLocals": true, // 사용하지 않는 지역 변수에 대해 오류 표시
+    "noUnusedParameters": true, // 사용하지 않는 함수 매개변수에 대해 오류 표시
+    "strictPropertyInitialization": false, // 엄격한 프로퍼티 초기화 비활성화
     "plugins": [
       {
-        "name": "next"
+        "name": "next" // Next.js 전용 플러그인 사용
       }
     ],
+    // 경로 별칭 설정 섹션
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // '@/'를 프로젝트 루트 경로로 매핑
     }
   },
+  // 포함할 파일 및 폴더 설정 섹션
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "next-env.d.ts", // Next.js 환경 타입 선언 파일 포함
+    "**/*.ts", // 모든 .ts 파일 포함
+    "**/*.tsx", // 모든 .tsx 파일 포함
+    ".next/types/**/*.ts", // Next.js 빌드 타입 포함
+    ".next/dev/types/**/*.ts", // 개발 모드 타입 포함
+    "**/*.mts" // 모든 .mts 파일 포함 (모듈 타입스크립트)
   ],
-  "exclude": ["node_modules"]
+  // 제외할 폴더 설정 섹션
+  "exclude": ["node_modules"] // node_modules 폴더는 컴파일 대상에서 제외
 }

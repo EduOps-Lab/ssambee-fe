@@ -1,0 +1,66 @@
+# CI 워크플로우 이름 설정
+name: CI
+
+# 워크플로우가 실행되는 이벤트 설정 (main, dev 브랜치에 push 또는 pull_request 발생 시)
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+# 워크플로우 내 작업 정의
+jobs:
+  # 린트 및 타입 체크 작업
+  lint-and-type-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 소스 코드 체크아웃 (저장소 코드 가져오기)
+      - uses: actions/checkout@v4
+
+      # Node.js 설정 (프로젝트에 지정된 버전 사용 및 npm 캐시 활성화)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      # 의존성 설치 (npm ci를 사용해 정확한 버전 설치)
+      - name: Install dependencies
+        run: npm ci
+
+      # ESLint 실행 (코드 스타일 및 품질 검사)
+      - name: Run ESLint
+        run: npm run lint
+
+      # 코드 포맷팅 검사 (포맷이 맞는지 확인)
+      - name: Check code formatting
+        run: npm run format:check
+
+      # 타입 검사 (TypeScript 타입 체크)
+      - name: Type check
+        run: npm run type-check
+
+  # 빌드 작업 (린트 및 타입 체크가 성공한 후 실행)
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-type-check
+
+    steps:
+      # 소스 코드 체크아웃 (저장소 코드 가져오기)
+      - uses: actions/checkout@v4
+
+      # Node.js 설정 (프로젝트에 지정된 버전 사용 및 npm 캐시 활성화)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      # 의존성 설치 (npm ci를 사용해 정확한 버전 설치)
+      - name: Install dependencies
+        run: npm ci
+
+      # 프로젝트 빌드 실행
+      - name: Build
+        run: npm run build
