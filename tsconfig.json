@@ -18,6 +18,7 @@
     "noUnusedLocals": true, // 사용하지 않는 지역 변수에 대해 오류 표시
     "noUnusedParameters": true, // 사용하지 않는 함수 매개변수에 대해 오류 표시
     "strictPropertyInitialization": false, // 엄격한 프로퍼티 초기화 비활성화
+    "baseUrl": ".", // 경로 별칭 기준 경로
     "plugins": [
       {
         "name": "next" // Next.js 전용 플러그인 사용
@@ -25,7 +26,7 @@
     ],
     // 경로 별칭 설정 섹션
     "paths": {
-      "@/*": ["./*"] // '@/'를 프로젝트 루트 경로로 매핑
+      "@/*": ["./src/*"] // '@/'를 src 기준 경로로 매핑
     }
   },
   // 포함할 파일 및 폴더 설정 섹션
