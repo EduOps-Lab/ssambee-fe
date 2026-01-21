@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import Link from "next/link";
 
 import { loginSchema } from "@/validation/auth.validation";
 import { LoginFormData, EducatorRole, LearnerRole } from "@/types/auth.type";
@@ -43,7 +44,6 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
 
   return (
     <div className="space-y-6">
-      {/* 로그인 폼 */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* 이메일 입력 */}
         <div>
@@ -59,9 +59,14 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
             {...register("email")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
             placeholder="example@email.com"
+            aria-invalid={errors.email ? "true" : "false"}
+            aria-describedby={errors.email ? "email-error" : undefined}
           />
+
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+            <p id="email-error" className="mt-1 text-sm text-red-600">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -80,18 +85,22 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
               {...register("password")}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition pr-12"
               placeholder="••••••••"
+              aria-invalid={errors.password ? "true" : "false"}
+              aria-describedby={errors.password ? "password-error" : undefined}
             />
+
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              aria-label="비밀번호 표시/숨김"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
             >
               {showPassword ? "🙈" : "👁️"}
             </button>
           </div>
+
           {errors.password && (
-            <p className="mt-1 text-sm text-red-600">
+            <p id="password-error" className="mt-1 text-sm text-red-600">
               {errors.password.message}
             </p>
           )}
@@ -103,7 +112,7 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
             id="keepLoggedIn"
             type="checkbox"
             {...register("keepLoggedIn")}
-            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
           />
           <label htmlFor="keepLoggedIn" className="ml-2 text-sm text-gray-700">
             로그인 상태 유지
@@ -113,7 +122,8 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
         {/* 로그인 버튼 */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+          aria-label="로그인"
         >
           로그인
         </button>
@@ -133,7 +143,8 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+        aria-label="구글 로그인"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path
@@ -158,10 +169,13 @@ export default function LoginForm<R extends EducatorRole | LearnerRole>({
 
       {/* 문의 */}
       <div className="text-center text-sm text-gray-600">
-        관리자 권한이 필요하신가요?
-        <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">
+        관리자 권한이 필요하신가요?{" "}
+        <Link
+          href="#"
+          className="text-blue-600 hover:text-blue-700 font-medium"
+        >
           등록 문의
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -33,26 +33,30 @@ export default function InstructorLoginPage() {
           {/* 역할 선택 버튼 */}
           <ButtonGroup className="w-full flex justify-center">
             <Button
-              variant="outline"
+              variant="default"
               type="button"
               onClick={() => setSelectedRole("instructor")}
-              className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors cursor-pointer ${
                 selectedRole === "instructor"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
+              aria-label="강사 역할 선택"
+              aria-pressed={selectedRole === "instructor" ? "true" : "false"}
             >
               강사
             </Button>
             <Button
-              variant="outline"
+              variant="default"
               type="button"
               onClick={() => setSelectedRole("assistant")}
-              className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors cursor-pointer ${
                 selectedRole === "assistant"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
+              aria-label="조교 역할 선택"
+              aria-pressed={selectedRole === "assistant" ? "true" : "false"}
             >
               조교
             </Button>
