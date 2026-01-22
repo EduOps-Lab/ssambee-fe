@@ -5,11 +5,19 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
 
 import { registerSchema } from "@/validation/auth.validation";
 import { RegisterFormData } from "@/types/auth.type";
 import { useAuthStore } from "@/stores/auth.store";
 import { REGISTER_FORM_DEFAULTS } from "@/constants/auth.defaults";
+
+// mock API 함수
+const verifyPhoneAPI = async (phone: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  if (phone === "010-1234-5678") return { success: true };
+  return { success: false };
+};
 
 type RegisterFormProps = {
   requireAuthCode?: boolean; // 인증 코드 필요 여부 - 조교
@@ -32,6 +40,7 @@ export default function RegisterForm({
     setError,
     clearErrors,
     trigger,
+    getValues,
     formState: { errors, isValid },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -40,6 +49,33 @@ export default function RegisterForm({
     defaultValues: REGISTER_FORM_DEFAULTS,
   });
 
+  // 전화번호 인증 mutation
+  const phoneMutation = useMutation({
+    mutationFn: (phone: string) => verifyPhoneAPI(phone),
+    onSuccess: (data) => {
+      if (data.success) {
+        setPhoneVerified(true);
+        clearErrors("phone");
+      } else {
+        alert("전화번호가 올바르지 않습니다.");
+      }
+    },
+    onError: (err) => {
+      console.error(err);
+      alert("전화번호 인증 중 오류가 발생했습니다.");
+    },
+  });
+
+  const handleVerifyPhone = async () => {
+    const isValidPhone = await trigger("phone");
+    if (!isValidPhone) return;
+    console.log("연락처 인증");
+
+    const phoneValue = getValues("phone");
+    phoneMutation.mutate(phoneValue);
+  };
+
+  // 회원가입 제출
   const onSubmit = (data: RegisterFormData) => {
     if (!isPhoneVerified) {
       setError("phone", {
@@ -58,19 +94,10 @@ export default function RegisterForm({
     }
 
     console.log("회원가입 데이터:", data);
+
     // TODO: 회원가입 API
     resetAuth();
     router.push("/educators/instructor/login");
-  };
-
-  const handleVerifyPhone = async () => {
-    const isValid = await trigger("phone");
-    if (!isValid) return;
-
-    console.log("연락처 인증");
-    // TODO: 연락처 인증 API
-    setPhoneVerified(true);
-    clearErrors("phone");
   };
 
   return (
@@ -115,7 +142,7 @@ export default function RegisterForm({
               type="tel"
               {...register("phone")}
               className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-              disabled={isPhoneVerified}
+              disabled={isPhoneVerified || phoneMutation.isPending}
               placeholder="010-1234-5678"
               aria-invalid={errors.phone ? "true" : "false"}
               aria-describedby={errors.phone ? "phone-error" : undefined}
@@ -124,15 +151,25 @@ export default function RegisterForm({
             <button
               type="button"
               onClick={handleVerifyPhone}
-              disabled={isPhoneVerified}
-              aria-label={isPhoneVerified ? "연락처 인증 완료" : "연락처 인증"}
+              disabled={isPhoneVerified || phoneMutation.isPending}
+              aria-label={
+                isPhoneVerified
+                  ? "연락처 인증 완료"
+                  : phoneMutation.isPending
+                    ? "인증 중..."
+                    : "연락처 인증"
+              }
               className={`px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-colors ${
                 isPhoneVerified
                   ? "bg-gray-600 text-white cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
             >
-              {isPhoneVerified ? "인증완료" : "번호 인증"}
+              {isPhoneVerified
+                ? "인증완료"
+                : phoneMutation.isPending
+                  ? "인증 중..."
+                  : "번호 인증"}
             </button>
           </div>
 
