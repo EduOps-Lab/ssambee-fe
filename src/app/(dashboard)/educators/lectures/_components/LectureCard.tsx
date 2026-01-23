@@ -30,7 +30,7 @@ export function LectureCard({ lecture }: LectureCardProps) {
 
         {/* 강사명 */}
         <p className="mb-4 text-sm text-muted-foreground">
-          담당 초교 {lecture.instructor}
+          담당 강사 {lecture.instructor}
         </p>
 
         {/* 시간 및 요일 */}
