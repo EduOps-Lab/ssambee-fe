@@ -56,7 +56,7 @@ export default function AuthenticationCode() {
     const isValid = await trigger("authenticationCode");
     if (!isValid) return;
 
-    const authenticationCode = getValues("authenticationCode");
+    const authenticationCode = getValues("authenticationCode").trim();
     console.log("인증코드 확인:", authenticationCode);
 
     // 인증 코드 저장
