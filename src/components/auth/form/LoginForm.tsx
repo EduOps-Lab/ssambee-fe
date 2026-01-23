@@ -48,6 +48,8 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
     },
   });
 
+  const isLoading = loginMutation.isPending;
+
   // 로그인 버튼 - role 데이터 포함
   const onSubmit = (data: LoginFormData) => {
     loginMutation.mutate({ ...data, role: selectedRole });
@@ -139,16 +141,16 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
         {/* 로그인 버튼 */}
         <button
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isLoading}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
             !isValid
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
           }`}
           aria-label="로그인"
-          aria-disabled={!isValid}
+          aria-disabled={!isValid || isLoading}
         >
-          로그인
+          {isLoading ? "로그인 중..." : "로그인"}
         </button>
       </form>
 

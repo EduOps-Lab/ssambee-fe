@@ -39,12 +39,14 @@ export default function AuthenticationCode() {
         setCodeVerified(true);
       } else {
         setCodeVerified(false);
+        setAuthCode("");
         alert("인증 코드가 올바르지 않습니다.");
       }
     },
     onError: (err) => {
       console.error(err);
       setCodeVerified(false);
+      setAuthCode("");
       alert("서버 인증 중 오류가 발생했습니다.");
     },
     onSettled: () => setVerifyingCode(false), // 요청 완료 후 상태

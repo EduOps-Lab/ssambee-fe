@@ -17,10 +17,7 @@ export default function ParentRegisterPage() {
   const [selectedRole, setSelectedRole] = useState<LearnerRole>("student");
 
   return (
-    <AuthLayout
-      title="회원가입"
-      description="자녀 관리를 위한 학부모 회원정보를 입력해주세요."
-    >
+    <AuthLayout title="회원가입" description="회원정보를 입력해주세요.">
       {/* 역할 선택 버튼 */}
       <RoleSelectorBtn
         options={LEARNER_ROLES}
