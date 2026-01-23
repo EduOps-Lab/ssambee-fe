@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 
@@ -22,7 +22,7 @@ export default function SchoolInfoForm() {
   const {
     register,
     setValue,
-    watch,
+    control,
     formState: { errors, isValid },
   } = useForm<SchoolInfoFormData>({
     mode: "onChange",
@@ -31,8 +31,8 @@ export default function SchoolInfoForm() {
     defaultValues: SCHOOL_INFO_FORM_DEFAULTS,
   });
 
-  const schoolName = watch("schoolName");
-  const grade = watch("grade");
+  const schoolName = useWatch({ control, name: "schoolName" });
+  const grade = useWatch({ control, name: "grade" });
 
   // 값이 바뀔 때마다 store에 반영
   useEffect(() => {
