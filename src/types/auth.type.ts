@@ -10,6 +10,14 @@ import {
 export type EducatorRole = "instructor" | "assistant";
 export type LearnerRole = "student" | "parent";
 
+export type UserRole = EducatorRole | LearnerRole;
+
+// 역할 선택 버튼
+export type RoleOption<T extends UserRole> = {
+  label: string;
+  value: T;
+};
+
 // 폼 데이터 타입
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
@@ -17,6 +25,9 @@ export type AuthCodeFormData = z.infer<typeof authCodeSchema>;
 
 // 회원가입 전송 데이터 타입
 export type RegisterUser = RegisterFormData & { authenticationCode?: string };
+
+// 로그인 전송 데이터 타입
+export type LoginUser = LoginFormData & { role: UserRole };
 
 // store 인증 상태 타입
 export type AuthStore = {
