@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 import type { LearnerRole, RoleOption } from "@/types/auth.type";
-import LoginForm from "@/components/form/LoginForm";
-import AuthLayout from "@/components/layout/AuthLayout";
-import RoleSelectorBtn from "@/components/button/RoleSelectorBtn";
+import LoginForm from "@/components/auth/form/LoginForm";
+import AuthLayout from "@/components/auth/layout/AuthLayout";
+import RoleSelectorBtn from "@/components/auth/button/RoleSelectorBtn";
 
 const LEARNER_ROLES: RoleOption<LearnerRole>[] = [
   { label: "학생", value: "student" },
