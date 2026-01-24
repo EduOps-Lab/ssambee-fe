@@ -94,7 +94,13 @@ export default function AuthenticationCode() {
             onClick={handleVerifyCode}
             disabled={isVerifyingCode || isCodeVerified}
             className={`px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-colors
-              ${isVerifyingCode ? "bg-gray-400 cursor-wait" : ""} ${isCodeVerified ? "bg-gray-600 text-white cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"}`}
+              ${
+                isVerifyingCode
+                  ? "bg-gray-400 text-white cursor-wait"
+                  : isCodeVerified
+                    ? "bg-gray-600 text-white cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+              }`}
             aria-label={
               isVerifyingCode
                 ? "인증 중..."
