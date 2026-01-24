@@ -27,10 +27,14 @@ export function LectureInfoSection({
       </div>
       <CardContent className="p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label
+            htmlFor="lecture-name"
+            className="block text-sm font-medium mb-2"
+          >
             수업명 <span className="text-red-500">*</span>
           </label>
           <Input
+            id="lecture-name"
             {...register("name")}
             placeholder="예: [고3] 수능 대비 수학 강의"
             disabled={disabled}
@@ -42,10 +46,14 @@ export function LectureInfoSection({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="lecture-subject"
+              className="block text-sm font-medium mb-2"
+            >
               과목 <span className="text-red-500">*</span>
             </label>
             <Input
+              id="lecture-subject"
               {...register("subject")}
               placeholder="예: 수학"
               disabled={disabled}
@@ -57,10 +65,14 @@ export function LectureInfoSection({
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="lecture-grade"
+              className="block text-sm font-medium mb-2"
+            >
               학년 <span className="text-red-500">*</span>
             </label>
             <Input
+              id="lecture-grade"
               {...register("grade")}
               placeholder="예: 고3"
               disabled={disabled}
@@ -75,10 +87,18 @@ export function LectureInfoSection({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="lecture-start-date"
+              className="block text-sm font-medium mb-2"
+            >
               개강일 <span className="text-red-500">*</span>
             </label>
-            <Input type="date" {...register("startDate")} disabled={disabled} />
+            <Input
+              id="lecture-start-date"
+              type="date"
+              {...register("startDate")}
+              disabled={disabled}
+            />
             {errors.startDate && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.startDate.message}
@@ -86,10 +106,14 @@ export function LectureInfoSection({
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="lecture-status"
+              className="block text-sm font-medium mb-2"
+            >
               수업 상태 <span className="text-red-500">*</span>
             </label>
             <select
+              id="lecture-status"
               {...register("status")}
               disabled={disabled}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"

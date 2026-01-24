@@ -76,7 +76,7 @@ export default function LectureCreatePage() {
     setScheduleData(newData);
   };
 
-  const handleSave = () => {
+  const handleSave = lectureForm.handleSubmit((lectureData) => {
     const hasInvalidSchedule = schedules.some(
       (id) => !scheduleSchema.safeParse(scheduleData[id]).success
     );
@@ -85,8 +85,6 @@ export default function LectureCreatePage() {
       alert("시간표의 요일/시작/종료 시간을 모두 입력해주세요.");
       return;
     }
-
-    const lectureData = lectureForm.getValues();
 
     const data = {
       lecture: lectureData,
@@ -117,7 +115,7 @@ export default function LectureCreatePage() {
 
     setIsSaved(true);
     alert("저장되었습니다! (콘솔을 확인하세요)");
-  };
+  });
 
   const handleCancel = () => {
     if (isSaved) {

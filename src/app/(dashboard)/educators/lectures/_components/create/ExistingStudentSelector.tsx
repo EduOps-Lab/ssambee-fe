@@ -23,8 +23,14 @@ export function ExistingStudentSelector({
   return (
     <>
       <div>
-        <label className="block text-sm font-medium mb-2">학생 검색</label>
+        <label
+          htmlFor="student-search"
+          className="block text-sm font-medium mb-2"
+        >
+          학생 검색
+        </label>
         <Input
+          id="student-search"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="학생 이름 또는 학교 검색"

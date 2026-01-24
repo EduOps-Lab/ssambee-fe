@@ -43,6 +43,7 @@ export function ManualStudentForm({ form, disabled }: ManualStudentFormProps) {
               <div className="flex justify-between items-center">
                 <h3 className="font-semibold">학생 정보 {index + 1}</h3>
                 <button
+                  type="button"
                   onClick={() => remove(index)}
                   disabled={disabled}
                   className="text-red-500 text-sm hover:underline disabled:cursor-not-allowed disabled:opacity-50"

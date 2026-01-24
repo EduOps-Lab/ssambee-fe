@@ -25,6 +25,7 @@ export function StudentRegistrationSection({
       <CardContent className="p-6 space-y-6">
         <div className="flex gap-4 border-b">
           <button
+            type="button"
             onClick={() => !disabled && onTabChange("manual")}
             disabled={disabled}
             className={`pb-3 px-1 ${
@@ -36,6 +37,7 @@ export function StudentRegistrationSection({
             수기 입력
           </button>
           <button
+            type="button"
             onClick={() => !disabled && onTabChange("existing")}
             disabled={disabled}
             className={`pb-3 px-1 ${
