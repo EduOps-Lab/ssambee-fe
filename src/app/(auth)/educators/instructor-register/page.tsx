@@ -1,5 +1,5 @@
-import RegisterForm from "@/components/auth/RegisterForm";
-import AuthLayout from "@/components/layout/AuthLayout";
+import RegisterForm from "@/components/auth/form/RegisterForm";
+import AuthLayout from "@/components/auth/layout/AuthLayout";
 
 export default function InstructorRegisterPage() {
   return (
@@ -7,7 +7,7 @@ export default function InstructorRegisterPage() {
       title="강사 회원가입"
       description="회원가입을 위해 필수 정보를 입력해주세요."
     >
-      <RegisterForm />
+      <RegisterForm userType="educators" role="instructor" />
     </AuthLayout>
   );
 }
