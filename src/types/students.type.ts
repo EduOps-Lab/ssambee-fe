@@ -4,6 +4,18 @@ export type LectureStatus = "진행중" | "종료";
 export type AttendanceStatus = "PRESENT" | "LATE" | "ABSENT" | "EARLY_LEAVE"; // 출석 상태
 export type ExamClinicStatus = "PENDING" | "COMPLETED"; // 클리닉 상태
 
+export type StudentCreateFormData = {
+  studentName: string;
+  studentPhone: string;
+  school: string;
+  grade: string;
+  parentName?: string;
+  parentPhone: string;
+  assignedClass: string;
+  registrationDate: string;
+  memo?: string;
+};
+
 export type StudentEnrollment = {
   /** Enrollment */
   enrollmentId: string;

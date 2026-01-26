@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { mockStudentEnrollments } from "@/data/students.mock";
 import { mockLectures } from "@/data/lectures.mock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,11 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Title from "@/components/common/header/Title";
-import {
-  StudentEnrollment,
-  StudentEnrollmentStatus,
-  StudentListQuery,
-} from "@/types/students.type";
+import { StudentListQuery } from "@/types/students.type";
 import SelectBtn from "@/components/common/button/SelectBtn";
 import {
   GRADE_SELECT_OPTIONS,
@@ -28,19 +24,20 @@ import {
   STUDENTS_TABLE_COLUMNS,
 } from "@/constants/students.default";
 import { StudentTableColumns } from "@/config/StudentTableColumns";
+import { useModal } from "@/providers/ModalProvider";
+import { useStudentSelectionStore } from "@/stores/studentsList.store";
+import { fetchStudentsAPI } from "@/services/students.service";
 
 import { StudentCreateModal } from "./_components/modal/StudentCreateModal";
 import { StudentChangeModal } from "./_components/modal/ClassChangeModal";
 import { TalkNotificationModal } from "./_components/modal/TalkNotificationModal";
 
 export default function StudentsListPage() {
-  // 서버 상태
-  const [students, setStudents] = useState<StudentEnrollment[]>(
-    mockStudentEnrollments
-  );
+  const { openModal } = useModal();
 
-  // 클라이언트 상태
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const { selectedStudentIds, setSelectedStudentIds, toggleStudent } =
+    useStudentSelectionStore();
+
   const [query, setQuery] = useState<StudentListQuery>({
     keyword: "",
     grade: null,
@@ -48,40 +45,31 @@ export default function StudentsListPage() {
     lectureId: null,
   });
 
-  // 모달 상태
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
-  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
-
-  // 필터 변경 시 학생 목록 조회
-  useEffect(() => {
-    // TODO: 학생 목록 조회 API 호출
-    const fetchStudents = async () => {
-      const response = await fetchStudentsAPI(query);
-      setStudents(response.data);
-    };
-    fetchStudents();
-  }, [query]);
-
-  // 체크박스 - 전체 선택 여부
-  const isAllSelected =
-    students.length > 0 && selectedStudents.length === students.length;
+  // 학생 목록 조회
+  const {
+    data: students = [],
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["students", query],
+    queryFn: () => fetchStudentsAPI(query),
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
 
   // 체크박스 - 전체 선택
   const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedStudents(students.map((s) => s.enrollmentId));
-    } else {
-      setSelectedStudents([]);
-    }
+    setSelectedStudentIds(checked ? students.map((s) => s.enrollmentId) : []);
   };
 
   // 체크박스 - 개별 선택
-  const handleSelectStudent = (id: string, checked: boolean) => {
-    setSelectedStudents((prev) =>
-      checked ? [...prev, id] : prev.filter((v) => v !== id)
-    );
+  const handleSelectStudent = (id: string) => {
+    toggleStudent(id);
   };
+
+  // 전체 선택 여부
+  const isAllSelected =
+    students.length > 0 && selectedStudentIds.length === students.length;
 
   // 수업 필터
   const handleLectureClick = (lectureId: string) => {
@@ -92,26 +80,39 @@ export default function StudentsListPage() {
   };
 
   // 학생 상태 변경(재원, 휴원, 퇴원)
-  const handleStatusChange = (
-    enrollmentId: string,
-    status: StudentEnrollmentStatus
-  ) => {
-    setStudents((prev) =>
-      prev.map((s) =>
-        s.enrollmentId === enrollmentId
-          ? {
-              ...s,
-              student: { ...s.student, enrollment: status },
-            }
-          : s
-      )
-    );
-  };
+  // const handleStatusChange = (
+  //   enrollmentId: string,
+  //   status: StudentEnrollmentStatus
+  // ) => {
+  //   setStudents((prev) =>
+  //     prev.map((s) =>
+  //       s.enrollmentId === enrollmentId
+  //         ? {
+  //             ...s,
+  //             student: { ...s.student, enrollment: status },
+  //           }
+  //         : s
+  //     )
+  //   );
+  // };
 
   const columns = StudentTableColumns({
-    selectedStudents,
+    selectedStudents: selectedStudentIds,
     onSelectStudent: handleSelectStudent,
   });
+
+  const pendingTableRow = (
+    <TableRow>
+      <TableCell
+        colSpan={STUDENTS_TABLE_COLUMNS.length + 1}
+        className="text-center py-4 text-muted-foreground"
+      >
+        로딩 중...
+      </TableCell>
+    </TableRow>
+  );
+
+  if (isError) return <div>조회 실패</div>;
 
   return (
     <div className="container mx-auto px-8 py-8 space-y-6 max-w-[1200px]">
@@ -125,7 +126,7 @@ export default function StudentsListPage() {
         <Button
           className="cursor-pointer"
           variant="outline"
-          onClick={() => setIsCreateModalOpen(true)}
+          onClick={() => openModal(<StudentCreateModal />)}
         >
           학생 등록
         </Button>
@@ -133,8 +134,8 @@ export default function StudentsListPage() {
         <Button
           className="cursor-pointer"
           variant="outline"
-          disabled={!selectedStudents.length}
-          onClick={() => setIsChangeModalOpen(true)}
+          disabled={selectedStudentIds.length === 0}
+          onClick={() => openModal(<StudentChangeModal />)}
         >
           수업 변경
         </Button>
@@ -142,8 +143,8 @@ export default function StudentsListPage() {
         <Button
           className="cursor-pointer"
           variant="outline"
-          disabled={!selectedStudents.length}
-          onClick={() => setIsNotificationModalOpen(true)}
+          disabled={selectedStudentIds.length === 0}
+          onClick={() => openModal(<TalkNotificationModal />)}
         >
           알림 발송
         </Button>
@@ -151,7 +152,7 @@ export default function StudentsListPage() {
         <Button
           className="cursor-pointer"
           variant="default"
-          disabled={!selectedStudents.length}
+          disabled={selectedStudentIds.length === 0}
         >
           출결 등록
         </Button>
@@ -168,7 +169,7 @@ export default function StudentsListPage() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          {mockLectures.slice(0, 6).map((lecture) => (
+          {mockLectures.map((lecture) => (
             <div
               key={lecture.id}
               onClick={() => handleLectureClick(lecture.id)}
@@ -188,10 +189,10 @@ export default function StudentsListPage() {
       </div>
 
       {/* 필터 섹션 */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center w-full">
         <div className="flex gap-2">
           <Input
-            className="w-full max-w-[300px]"
+            className="w-full md:w-[200px] lg:w-[300px]"
             placeholder="이름, 전화번호 검색..."
             value={query.keyword}
             onChange={(e) =>
@@ -200,7 +201,7 @@ export default function StudentsListPage() {
           />
 
           <SelectBtn
-            className="w-[120px]"
+            className="max-w-[120px]"
             value={query.grade ?? "all"}
             placeholder="학년 선택"
             options={GRADE_SELECT_OPTIONS}
@@ -213,7 +214,7 @@ export default function StudentsListPage() {
           />
 
           <SelectBtn
-            className="w-[120px]"
+            className="max-w-[120px]"
             value={query.status ?? "all"}
             placeholder="상태 선택"
             options={STATUS_SELECT_OPTIONS}
@@ -228,17 +229,19 @@ export default function StudentsListPage() {
 
         {/* 선택된 학생 수*/}
         <span className="flex items-end text-sm text-muted-foreground">
-          선택된 학생 {selectedStudents.length}명
+          선택된 학생 {selectedStudentIds.length}명
         </span>
       </div>
 
       {/* 데이터 테이블 */}
+      {/* TODO: 공용 컴포넌트로 분리 */}
       <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox
+                  className="cursor-pointer"
                   checked={isAllSelected}
                   onCheckedChange={handleSelectAll}
                 />
@@ -251,39 +254,23 @@ export default function StudentsListPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((studentData) => {
-              return (
-                <TableRow key={studentData.enrollmentId}>
-                  {columns.map((col) => (
-                    <TableCell
-                      key={col.key}
-                      className="whitespace-nowrap text-sm"
-                    >
-                      {col.render(studentData)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+            {isPending
+              ? pendingTableRow
+              : students.map((studentData) => (
+                  <TableRow key={studentData.enrollmentId}>
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col.key}
+                        className="whitespace-nowrap text-sm"
+                      >
+                        {col.render(studentData)}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </div>
-
-      {/* 모달 */}
-      <StudentCreateModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
-      />
-      <StudentChangeModal
-        open={isChangeModalOpen}
-        onOpenChange={setIsChangeModalOpen}
-        selectedStudentIds={selectedStudents}
-      />
-      <TalkNotificationModal
-        open={isNotificationModalOpen}
-        onOpenChange={setIsNotificationModalOpen}
-        selectedStudentIds={selectedStudents}
-      />
     </div>
   );
 }

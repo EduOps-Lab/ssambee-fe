@@ -1,11 +1,26 @@
-export const GRADE_SELECT_OPTIONS = [
-  { label: "전체 학년", value: "all" },
+export const CREATE_STUDENT_FORM_DEFAULTS = {
+  studentName: "",
+  studentPhone: "",
+  school: "",
+  grade: "",
+  parentName: "",
+  parentPhone: "",
+  assignedClass: "",
+  registrationDate: new Date().toISOString().split("T")[0],
+};
+
+export const GRADE_SELECTING_OPTIONS = [
   { label: "고3", value: "고3" },
   { label: "고2", value: "고2" },
   { label: "고1", value: "고1" },
   { label: "중3", value: "중3" },
   { label: "중2", value: "중2" },
   { label: "중1", value: "중1" },
+];
+
+export const GRADE_SELECT_OPTIONS = [
+  { label: "전체 학년", value: "all" },
+  ...GRADE_SELECTING_OPTIONS,
 ];
 
 export const STATUS_SETTING_OPTIONS = [

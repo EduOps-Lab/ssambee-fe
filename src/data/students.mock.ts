@@ -205,7 +205,8 @@ export const mockStudentEnrollments: StudentEnrollment[] = [
       id: null,
       name: "최윤서",
       phone: "010-3333-6666",
-      grade: "초6",
+      school: "대전여고",
+      grade: "고2",
       isAppUser: false,
     },
     parent: {
@@ -216,7 +217,7 @@ export const mockStudentEnrollments: StudentEnrollment[] = [
     },
     lecture: {
       id: "lec-005",
-      title: "초등 수학 사고력",
+      title: "고2 수학 사고력",
       subject: "수학",
       isActive: true,
     },
@@ -232,7 +233,7 @@ export const mockStudentEnrollments: StudentEnrollment[] = [
     },
     exams: [],
     extraInfo: {
-      memo: "부모 요청으로 숙제량 조절",
+      memo: "부모 요청으로 보충학습 진행",
       consultationRecords: ["2025-01-10 학부모 상담"],
     },
   },
