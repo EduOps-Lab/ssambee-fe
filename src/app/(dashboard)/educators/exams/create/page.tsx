@@ -35,7 +35,7 @@ export default function CreateExamPage() {
   const questions = useWatch({ control, name: "questions" }) || [];
   const totalQuestions = questions.length;
   const totalScore = questions.reduce(
-    (sum, question) => sum + (Number(question?.score) || 0),
+    (sum, question) => sum + (question?.score ?? 0),
     0
   );
   const questionsErrorMessage =

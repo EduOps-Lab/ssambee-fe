@@ -92,6 +92,8 @@ export function QuestionItem({
             <div className="flex items-center gap-2">
               <Input
                 type="number"
+                min={0}
+                step={1}
                 {...register(`questions.${index}.score`, {
                   setValueAs: (value) => (value === "" ? 0 : Number(value)),
                 })}
@@ -114,6 +116,7 @@ export function QuestionItem({
             type="button"
             onClick={onDelete}
             disabled={disabled}
+            aria-label={`문항 ${questionNumber} 삭제`}
             className="p-2 rounded-md hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Trash2 className="h-4 w-4" />
@@ -128,16 +131,28 @@ export function QuestionItem({
           {/* 유형 및 출처 */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">유형</label>
+              <label
+                htmlFor={`question-${index}-category`}
+                className="block text-sm font-medium mb-2"
+              >
+                유형
+              </label>
               <Input
+                id={`question-${index}-category`}
                 placeholder="예: 제목, 빈칸, 요약"
                 {...register(`questions.${index}.category`)}
                 disabled={disabled}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">출처</label>
+              <label
+                htmlFor={`question-${index}-source`}
+                className="block text-sm font-medium mb-2"
+              >
+                출처
+              </label>
               <Input
+                id={`question-${index}-source`}
                 placeholder="예: 2025 3월 모의고사"
                 {...register(`questions.${index}.source`)}
                 disabled={disabled}
@@ -147,10 +162,14 @@ export function QuestionItem({
 
           {/* 문제 내용 */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label
+              htmlFor={`question-${index}-content`}
+              className="block text-sm font-medium mb-2"
+            >
               문제 내용 (선택사항)
             </label>
             <textarea
+              id={`question-${index}-content`}
               className="flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="문항 1"
               {...register(`questions.${index}.content`)}
@@ -173,6 +192,7 @@ export function QuestionItem({
                   <button
                     key={num}
                     type="button"
+                    aria-pressed={selectedAnswer === num}
                     onClick={() =>
                       setValue(`questions.${index}.answer.selected`, num, {
                         shouldValidate: true,
@@ -209,10 +229,14 @@ export function QuestionItem({
                 <h3 className="font-medium">주관식 정답 설정</h3>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor={`question-${index}-answer-text`}
+                  className="block text-sm font-medium mb-2"
+                >
                   정답 입력
                 </label>
                 <Input
+                  id={`question-${index}-answer-text`}
                   {...register(`questions.${index}.answer.text`)}
                   placeholder="정답을 입력하세요"
                   disabled={disabled}

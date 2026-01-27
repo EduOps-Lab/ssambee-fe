@@ -3,17 +3,17 @@ import { z } from "zod";
 export const questionSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("객관식"),
-    score: z.number().min(0, "배점은 0 이상이어야 합니다"),
+    score: z.number().int().min(0, "배점은 0 이상이어야 합니다"),
     category: z.string().optional(),
     source: z.string().optional(),
     content: z.string().optional(),
     answer: z.object({
-      selected: z.number().min(1).max(5),
+      selected: z.number().int().min(1).max(5),
     }),
   }),
   z.object({
     type: z.literal("주관식"),
-    score: z.number().min(0, "배점은 0 이상이어야 합니다"),
+    score: z.number().int().min(0, "배점은 0 이상이어야 합니다"),
     category: z.string().optional(),
     source: z.string().optional(),
     content: z.string().optional(),
@@ -40,7 +40,7 @@ export const examFormSchema = z
   .superRefine((data, ctx) => {
     if (!data.questions || data.questions.length === 0) return;
     const totalScore = data.questions.reduce(
-      (sum, question) => sum + (Number(question.score) || 0),
+      (sum, question) => sum + question.score,
       0
     );
     if (totalScore !== 100) {
