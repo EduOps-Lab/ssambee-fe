@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,14 @@ export function QuestionAnswerList({
   questions,
   examSubtitle,
 }: QuestionAnswerListProps) {
-  const displayedCount = 10;
-  const totalCount = 20;
+  const totalCount = questions.length;
+  const [visibleCount, setVisibleCount] = useState(10);
+  const displayedCount = Math.min(visibleCount, totalCount);
+  const visibleQuestions = questions.slice(0, displayedCount);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + 10, totalCount));
+  };
 
   return (
     <div className="space-y-4">
@@ -26,7 +33,7 @@ export function QuestionAnswerList({
       </div>
 
       <div className="space-y-3">
-        {questions.map((question) => {
+        {visibleQuestions.map((question) => {
           const statusText =
             question.status === "미입력"
               ? `미입력 정답 ${question.correctAnswer}`
@@ -98,14 +105,17 @@ export function QuestionAnswerList({
       </div>
 
       {/* 더보기 버튼 */}
-      {displayedCount < totalCount && (
-        <div className="flex justify-center pt-2">
-          <Button variant="outline" className="gap-2">
-            더보기 ({displayedCount}/{totalCount})
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-center pt-2">
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={handleLoadMore}
+          disabled={displayedCount >= totalCount}
+        >
+          더보기 ({displayedCount}/{totalCount})
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 }
