@@ -23,7 +23,7 @@ export function ExamSelectSection({
       </div>
       <CardContent className="p-6">
         <Select disabled={disabled}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full" aria-label="등록된 시험 선택">
             <SelectValue placeholder="새 시험 등록" />
           </SelectTrigger>
           <SelectContent>
