@@ -108,7 +108,7 @@ export default function StudentDetailPage() {
                   openModal(<EditProfileModal studentData={studentData} />)
                 }
               >
-                내 정보 수정
+                정보 수정
               </Button>
               <Button
                 className="cursor-pointer"
