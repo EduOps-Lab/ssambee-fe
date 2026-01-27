@@ -51,16 +51,18 @@ export function StudentChangeModal() {
     });
 
     // TODO: API 호출
-    setTargetLecture("");
-    setMemo("");
-    clearSelection();
+    resetForm();
     closeModal();
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     setTargetLecture("");
     setMemo("");
     clearSelection();
+  };
+
+  const handleClose = () => {
+    resetForm();
     closeModal();
   };
 
