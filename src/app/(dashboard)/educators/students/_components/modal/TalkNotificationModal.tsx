@@ -73,7 +73,6 @@ export function TalkNotificationModal() {
         if (!open) handleClose();
       }}
     >
-      {" "}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">

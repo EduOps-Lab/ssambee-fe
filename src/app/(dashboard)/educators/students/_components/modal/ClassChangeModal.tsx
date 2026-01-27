@@ -68,7 +68,6 @@ export function StudentChangeModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      {" "}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="text-xs text-muted-foreground mb-1">수업 이동</div>

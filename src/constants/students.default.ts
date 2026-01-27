@@ -1,13 +1,19 @@
-export const getCreateStudentFormDefaults = () => ({
-  studentName: "",
-  studentPhone: "",
-  school: "",
-  grade: "",
-  parentName: "",
-  parentPhone: "",
-  assignedClass: "",
-  registrationDate: new Date().toISOString().split("T")[0],
-});
+export const getCreateStudentFormDefaults = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  return {
+    studentName: "",
+    studentPhone: "",
+    school: "",
+    grade: "",
+    parentName: "",
+    parentPhone: "",
+    assignedClass: "",
+    registrationDate: `${yyyy}-${mm}-${dd}`,
+  };
+};
 
 export const GRADE_SELECTING_OPTIONS = [
   { label: "고3", value: "고3" },

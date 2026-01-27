@@ -54,7 +54,6 @@ export function StudentCreateModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      {" "}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl">학생 등록</DialogTitle>
