@@ -8,6 +8,7 @@ import Title from "@/components/common/header/Title";
 import { mockLectureExams } from "@/data/lecture-exams.mock";
 import { mockLectures } from "@/data/lectures.mock";
 import { Card, CardContent } from "@/components/ui/card";
+import EmptyState from "@/components/common/EmptyState";
 
 import ExamListTable from "../_components/ExamListTable";
 import ScoreChart from "../_components/ScoreChart";
@@ -40,21 +41,10 @@ export default function LectureDetailPage() {
   const lecture = mockLectures.find((lec) => lec.id === lectureId);
 
   // 학생의 해당 강의 시험 데이터 조회
+  // TODO: studentId가 필요한지 체크
   const lectureExamData = mockLectureExams.find(
     (data) => data.lectureId === lectureId && data.studentId === studentId
   );
-
-  if (!lecture) {
-    return (
-      // TODO: 공용 컴포넌트
-      <div className="flex flex-col items-center justify-center h-screen px-8 py-8">
-        <p>수업 정보를 찾을 수 없습니다.</p>
-        <Button onClick={() => router.back()} className="mt-4 cursor-pointer">
-          돌아가기
-        </Button>
-      </div>
-    );
-  }
 
   // 선택된 시험이 1개일 때만 통계 카드 표시, 아니면 "-"
   const singleSelectedExam =
@@ -63,6 +53,15 @@ export default function LectureDetailPage() {
           (exam) => exam.examId === selectedExamIds[0]
         )
       : null;
+
+  if (!lecture) {
+    return (
+      <EmptyState
+        message="수업 정보를 찾을 수 없습니다."
+        showBackButton={true}
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto px-8 py-8 space-y-6 max-w-[1200px]">
