@@ -21,7 +21,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export default function AttendanceRegisterModal() {
+type AttendanceRegisterModalProps = {
+  studentId: string;
+};
+
+export default function AttendanceRegisterModal({
+  studentId,
+}: AttendanceRegisterModalProps) {
   const { isOpen, closeModal } = useModal();
 
   const {
@@ -40,7 +46,11 @@ export default function AttendanceRegisterModal() {
   const status = useWatch({ control, name: "status" });
 
   const onSubmit = (data: AttendanceRegisterFormData) => {
-    console.log("출결 등록 데이터:", data);
+    const payload = {
+      studentId,
+      ...data,
+    };
+    console.log("출결 등록 데이터:", payload);
     // TODO: API 호출
     reset();
     closeModal();

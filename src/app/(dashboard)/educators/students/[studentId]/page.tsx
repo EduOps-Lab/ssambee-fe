@@ -21,13 +21,13 @@ export default function StudentDetailPage() {
   const router = useRouter();
   const { openModal } = useModal();
 
-  const enrollmentId = params.studentId as string;
+  const studentId = params.studentId as string;
 
   const [visibleLectures, setVisibleLectures] = useState(6);
 
   // 학생 데이터 조회
   const studentData = mockStudentEnrollments.find(
-    (enrollment) => enrollment.enrollmentId === enrollmentId
+    (enrollment) => enrollment.enrollmentId === studentId
   );
 
   if (!studentData) {
@@ -122,7 +122,9 @@ export default function StudentDetailPage() {
               <Button
                 className="cursor-pointer"
                 variant="default"
-                onClick={() => openModal(<AttendanceRegisterModal />)}
+                onClick={() =>
+                  openModal(<AttendanceRegisterModal studentId={studentId} />)
+                }
               >
                 출결 등록
               </Button>
@@ -175,7 +177,7 @@ export default function StudentDetailPage() {
               className="hover:shadow-md transition-shadow relative cursor-pointer"
               onClick={() =>
                 router.push(
-                  `/educators/students/${enrollmentId}/lectures/${lecture.id}`
+                  `/educators/students/${studentId}/lectures/${lecture.id}`
                 )
               }
             >

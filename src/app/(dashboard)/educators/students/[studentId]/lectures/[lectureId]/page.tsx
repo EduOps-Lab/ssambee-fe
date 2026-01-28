@@ -15,7 +15,6 @@ import ScoreChart from "../_components/ScoreChart";
 
 export default function LectureDetailPage() {
   const params = useParams();
-  const router = useRouter();
 
   const studentId = params.studentId as string;
   const lectureId = params.lectureId as string;
