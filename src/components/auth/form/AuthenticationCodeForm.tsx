@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 import { authCodeSchema } from "@/validation/auth.validation";
 import { useAuthStore } from "@/stores/auth.store";
@@ -11,12 +11,14 @@ import { AUTH_CODE_FORM_DEFAULTS } from "@/constants/auth.defaults";
 import { verifyAuthCodeAPI } from "@/services/auth.service";
 
 export default function AuthenticationCodeForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const { isCodeVerified, setAuthCode, setCodeVerified } = useAuthStore();
 
   const {
     register,
     getValues,
     trigger,
+    reset,
     formState: { errors },
   } = useForm<AuthCodeFormData>({
     resolver: zodResolver(authCodeSchema),
@@ -25,39 +27,37 @@ export default function AuthenticationCodeForm() {
     defaultValues: AUTH_CODE_FORM_DEFAULTS,
   });
 
-  const mutation = useMutation({
-    mutationFn: (code: string) => verifyAuthCodeAPI(code),
-    onSuccess: (data) => {
-      if (data.success) {
+  const handleVerifyCode = async () => {
+    const isValidCode = await trigger("signupCode");
+    if (!isValidCode) {
+      alert("인증번호를 입력해주세요.");
+      return;
+    }
+
+    const signupCode = getValues("signupCode");
+
+    try {
+      setIsLoading(true);
+      const res = await verifyAuthCodeAPI(signupCode);
+
+      if (res.success) {
+        setAuthCode(signupCode);
         setCodeVerified(true);
+        alert("인증번호 인증 완료!");
       } else {
         setCodeVerified(false);
-        setAuthCode("");
-        alert("인증 코드가 올바르지 않습니다.");
+        reset({ signupCode: "" });
+        alert("인증번호 매칭에 실패했습니다.");
       }
-    },
-    onError: (err) => {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       setCodeVerified(false);
-      setAuthCode("");
-      alert("서버 인증 중 오류가 발생했습니다.");
-    },
-  });
-
-  const handleVerifyCode = async () => {
-    const isValid = await trigger("signupCode");
-    if (!isValid) return;
-
-    const signupCode = getValues("signupCode").trim();
-    console.log("인증코드 확인:", signupCode);
-
-    // 인증 코드 저장
-    setAuthCode(signupCode);
-
-    mutation.mutate(signupCode);
+      reset({ signupCode: "" });
+      alert("인증 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  const isLoading = mutation.isPending;
 
   return (
     <div className="space-y-4">
@@ -85,14 +85,6 @@ export default function AuthenticationCodeForm() {
             type="button"
             onClick={handleVerifyCode}
             disabled={isLoading || isCodeVerified}
-            className={`px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-colors
-              ${
-                isLoading
-                  ? "bg-gray-400 text-white cursor-wait"
-                  : isCodeVerified
-                    ? "bg-gray-600 text-white cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-              }`}
             aria-label={
               isLoading
                 ? "인증 중..."
@@ -100,6 +92,13 @@ export default function AuthenticationCodeForm() {
                   ? "인증 완료"
                   : "인증하기"
             }
+            className={`px-4 py-3 rounded-lg font-medium whitespace-nowrap transition-colors ${
+              isLoading
+                ? "bg-gray-400 text-white cursor-wait"
+                : isCodeVerified
+                  ? "bg-gray-600 text-white cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+            }`}
           >
             {isLoading
               ? "인증 중..."
@@ -109,7 +108,6 @@ export default function AuthenticationCodeForm() {
           </button>
         </div>
 
-        {/* 안내 텍스트 */}
         <p className="text-xs text-gray-500">
           * 소속 학원 및 담당 강사 정보가 코드를 통해 자동으로 연결됩니다.
         </p>

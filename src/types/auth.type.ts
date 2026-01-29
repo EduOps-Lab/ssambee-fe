@@ -37,9 +37,26 @@ export type RegisterUser = RegisterRequestFormData & {
   userType: Role;
 };
 
-// ------------------------------------------------------------
-// store 타입
-// ------------------------------------------------------------
+export type SignupInstructorUser = RegisterRequestFormData & {
+  userType: "INSTRUCTOR";
+};
+
+export type SignupAssistantUser = RegisterRequestFormData & {
+  signupCode?: string;
+  userType: "ASSISTANT";
+};
+
+export type SignupStudentUser = RegisterRequestFormData & {
+  school?: string;
+  schoolYear?: string;
+  userType: "STUDENT";
+};
+
+export type SignupParentUser = RegisterRequestFormData & {
+  userType: "PARENT";
+};
+
+// store 타입-----------------------------------------------
 // 인증 코드 & 전화번호
 export type AuthStore = {
   // 전화번호 인증
