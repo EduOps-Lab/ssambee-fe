@@ -6,7 +6,7 @@ type LabelProps = {
   showDot?: boolean;
 };
 
-export default function MiniLabel({
+export default function StatusLabel({
   color,
   children,
   showDot = false,

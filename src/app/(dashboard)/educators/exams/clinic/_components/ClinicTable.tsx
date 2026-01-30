@@ -2,7 +2,7 @@
 
 import { useClinicStore } from "@/stores/clinic.store";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import RoundStatusLabel from "@/components/common/label/RoundStatusLabel";
+import StatusLabel from "@/components/common/label/StatusLabel";
 
 export function ClinicTable() {
   const { students, selectedIds, selectAll, toggleSelected, clearSelection } =
@@ -117,12 +117,12 @@ export function ClinicTable() {
                     {student.failedDate}
                   </td>
                   <td className="px-4 py-3">
-                    <RoundStatusLabel
+                    <StatusLabel
                       color={student.status === "완료" ? "blue" : "green"}
                       showDot
                     >
                       {student.status}
-                    </RoundStatusLabel>
+                    </StatusLabel>
                   </td>
                 </tr>
               ))
