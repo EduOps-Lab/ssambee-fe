@@ -146,14 +146,21 @@ export function useAuth() {
   };
 
   const signout = async (apiRole: LoginURLType) => {
-    await signoutAPI(apiRole);
-    setUser(null);
+    const targetPath =
+      apiRole === "MGMT" ? "/educators/login" : "/learners/login";
 
-    // 역할별 로그인 페이지 이동
-    if (apiRole === "MGMT") {
-      router.push("/educators/login");
-    } else {
-      router.push("/students/login");
+    try {
+      setLoading(true);
+      await signoutAPI(apiRole);
+
+      setUser(null);
+
+      router.refresh();
+      router.replace(targetPath);
+    } catch (err) {
+      console.error("로그아웃 실패:", err);
+    } finally {
+      setLoading(false);
     }
   };
 

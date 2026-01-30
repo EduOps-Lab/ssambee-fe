@@ -41,7 +41,8 @@ export function RouteGuard({
     }
   }, [user, isLoading, allowedRoles, router, hasAccess]);
 
-  if (isLoading || !hasAccess) return <div>권한 확인 중...</div>;
+  if (isLoading) return <div>로딩 중...</div>;
+  if (!user || !hasAccess) return null;
 
   return <>{children}</>;
 }
