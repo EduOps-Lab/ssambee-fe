@@ -60,6 +60,7 @@ export function KakaoNotificationModal({
   defaultMessage = "",
   onSend,
 }: KakaoNotificationModalProps) {
+  // TODO: defaultMessage 변경 시 message 상태 동기화(useEffect) 필요
   const [message, setMessage] = useState(defaultMessage);
   const [targetType, setTargetType] = useState<TargetType>("all");
 
@@ -91,6 +92,10 @@ export function KakaoNotificationModal({
             : "학부모";
       alert(`${targetLabel}에게 카카오톡 발송이 완료되었습니다.`);
     }
+    handleClose();
+  };
+
+  const handleClose = () => {
     onOpenChange(false);
     setMessage(defaultMessage);
     setTargetType("all");
@@ -225,7 +230,7 @@ export function KakaoNotificationModal({
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={handleClose}>
             취소
           </Button>
           <Button

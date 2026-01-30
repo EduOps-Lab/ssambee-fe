@@ -30,7 +30,7 @@ type PremiumReportPdfProps = {
     homeworkTask: string;
     homeworkExtra: string;
     weaknessType: string;
-    message: string;
+    message?: string;
   };
   questionResults: Array<{
     no: number;
@@ -58,6 +58,7 @@ export function PremiumReportPdf({
         <View style={styles.topSection}>
           {/* 헤더 */}
           <View style={styles.header}>
+            {/* TODO: 연도/강사명/리포트 제목을 데이터 기반으로 치환 */}
             <Text style={styles.headerYear}>2026</Text>
             <Text style={styles.headerTitle}>강사이름영어</Text>
             <Text style={styles.headerTitle}>주간 리포트</Text>
@@ -92,8 +93,10 @@ export function PremiumReportPdf({
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>학원명</Text>
+              {/* TODO: 학원명은 데이터 prop으로 치환 */}
               <Text style={styles.infoValue}></Text>
               <Text style={styles.infoLabelSmall}>회차</Text>
+              {/* TODO: 회차는 데이터 기반으로 치환 */}
               <Text style={styles.infoValue}>6회차</Text>
             </View>
             <View style={styles.infoRow}>
@@ -237,9 +240,12 @@ export function PremiumReportPdf({
 
                 // 데이터 포인트 계산
                 const points = scoreHistory.map((item, index) => {
-                  const x =
-                    paddingLeft +
-                    (index / (scoreHistory.length - 1)) * graphWidth;
+                  const xRatio =
+                    scoreHistory.length > 1
+                      ? index / (scoreHistory.length - 1)
+                      : 0.5;
+                  const x = paddingLeft + xRatio * graphWidth;
+                  // TODO: 점수 범위를 clamp하거나 minScore를 데이터 기반으로 계산
                   const y =
                     paddingTop +
                     graphHeight -

@@ -81,10 +81,14 @@ export function SimpleReportTemplate({ examData }: SimpleReportTemplateProps) {
 
       const blob = await pdf(<SimpleReportPdf data={pdfData} />).toBlob();
 
+      const sanitize = (str: string) => str.replace(/[/\\?%*:|"<>]/g, "_");
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${examData.studentName}_${examData.examName}_심플리포트.pdf`;
+      link.download = `${sanitize(examData.studentName)}_${sanitize(
+        examData.examName
+      )}_심플리포트.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

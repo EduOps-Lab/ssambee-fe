@@ -125,11 +125,15 @@ export function PremiumReportTemplate({
         />
       ).toBlob();
 
+      const sanitize = (str: string) => str.replace(/[/\\?%*:|"<>]/g, "_");
+
       // 다운로드
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${examData.studentName}_${examData.examName}_프리미엄리포트.pdf`;
+      link.download = `${sanitize(examData.studentName)}_${sanitize(
+        examData.examName
+      )}_프리미엄리포트.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -262,6 +266,7 @@ export function PremiumReportTemplate({
             <div className="grid grid-cols-[1fr_300px] gap-6">
               {/* 좌측: 리포트 타이틀 */}
               <div className="rounded-lg bg-zinc-900 p-6 text-white">
+                {/* TODO: 연도/강사명/리포트 제목을 데이터 기반으로 치환 */}
                 <p className="text-4xl font-bold">2026</p>
                 <p className="text-3xl font-bold">강사이름영어</p>
                 <p className="text-3xl font-bold">주간 리포트</p>
@@ -293,6 +298,7 @@ export function PremiumReportTemplate({
                             setIsSaved(false);
                           }}
                           disabled={!isEditing}
+                          aria-label="출결"
                           className="w-full bg-transparent p-3 text-center outline-none disabled:cursor-not-allowed disabled:opacity-70"
                           placeholder="입력"
                         />
@@ -306,6 +312,7 @@ export function PremiumReportTemplate({
                             setIsSaved(false);
                           }}
                           disabled={!isEditing}
+                          aria-label="복습테스트"
                           className="w-full bg-transparent p-3 text-center outline-none disabled:cursor-not-allowed disabled:opacity-70"
                           placeholder="입력"
                         />
@@ -386,6 +393,7 @@ export function PremiumReportTemplate({
                           setIsSaved(false);
                         }}
                         disabled={!isEditing}
+                        aria-label="단어 과제"
                         className="w-full bg-transparent p-3 text-center outline-none disabled:cursor-not-allowed disabled:opacity-70"
                         placeholder="입력"
                       />
@@ -399,6 +407,7 @@ export function PremiumReportTemplate({
                           setIsSaved(false);
                         }}
                         disabled={!isEditing}
+                        aria-label="과제"
                         className="w-full bg-transparent p-3 text-center outline-none disabled:cursor-not-allowed disabled:opacity-70"
                         placeholder="입력"
                       />
@@ -412,6 +421,7 @@ export function PremiumReportTemplate({
                           setIsSaved(false);
                         }}
                         disabled={!isEditing}
+                        aria-label="추가 과제"
                         className="w-full bg-transparent p-3 text-center outline-none disabled:cursor-not-allowed disabled:opacity-70"
                         placeholder="입력"
                       />
