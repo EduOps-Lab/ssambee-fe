@@ -90,11 +90,19 @@ export function useAuth() {
 
       alert("회원가입 성공!");
 
-      // 회원가입 후 역할별 로그인 페이지 이동
+      // 회원가입 후 자동 로그인
+      await signin({
+        email: data.email,
+        password: data.password,
+        userType: data.userType,
+        rememberMe: false,
+      });
+
+      // 자동 로그인 후 역할별 로그인 페이지 이동
       const targetPath =
         data.userType === "INSTRUCTOR" || data.userType === "ASSISTANT"
-          ? "/educators/login"
-          : "/learners/login";
+          ? "/educators"
+          : "/learners";
 
       router.push(targetPath);
 
@@ -119,9 +127,11 @@ export function useAuth() {
 
       const res = await signinAPI(data, apiRole);
 
-      if (res.data?.user) {
+      const user = res.data?.data?.user;
+
+      if (user) {
         alert("로그인 성공!");
-        setUser(res.data.user);
+        setUser(user);
 
         // 역할별 메인 페이지(대시보드) 이동
         // TODO: 강사/조교/학생/학부모 구분한 라우팅
