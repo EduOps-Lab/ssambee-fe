@@ -17,3 +17,18 @@ export const axiosClientSVC = axios.create({
   },
   withCredentials: true,
 });
+
+// 401 에러 -> 레이아웃 가드가 리다이렉트 시킴
+const attachAuthInterceptor = (client: typeof axiosClient) => {
+  client.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+      }
+      return Promise.reject(error);
+    }
+  );
+};
+
+attachAuthInterceptor(axiosClient);
+attachAuthInterceptor(axiosClientSVC);

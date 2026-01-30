@@ -1,7 +1,13 @@
-export default function EducatorsLayout({
+import { RouteGuard } from "@/components/guard/guards";
+
+export default function EducatorsAuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <RouteGuard allowedRoles={["INSTRUCTOR", "ASSISTANT"]}>
+      {children}
+    </RouteGuard>
+  );
 }
