@@ -1,50 +1,73 @@
-// 임시 Auth API 함수
+import {
+  LoginUser,
+  SignupAssistantUser,
+  SignupInstructorUser,
+  SignupParentUser,
+  SignupStudentUser,
+} from "@/types/auth.type";
+import {
+  GENERATED_AUTH_CODES,
+  SUBSCRIBED_PHONE_NUMBERS,
+} from "@/data/auth-form.mock";
 
-import { LoginUser, RegisterUser } from "@/types/auth.type";
+import { axiosClient, axiosClientSVC } from "./axiosClient";
 
 // 인증코드 검증 API
-export const verifyAuthCodeAPI = async (authenticationCode: string) => {
+export const verifyAuthCodeAPI = async (signupCode: string) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  if (authenticationCode === "123456") {
-    return { success: true };
+
+  console.log("인증코드 검증 요청:", signupCode);
+
+  // 서버에서 생성된 인증번호와 일치하면
+  if (GENERATED_AUTH_CODES.includes(signupCode)) {
+    return { success: true, message: "인증번호 매칭 완료!" };
+  } else {
+    return { success: false, message: "인증번호가 일치하지 않습니다." };
   }
-  return { success: false };
 };
 
 // 전화번호 인증 API
-export const verifyPhoneAPI = async (phone: string) => {
+export const verifyPhoneAPI = async (phoneNumber: string) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  if (phone === "010-1234-5678") {
-    return { success: true };
+
+  console.log("전화번호 인증 요청:", phoneNumber);
+
+  // 이미 가입된 전화번호면 인증 실패
+  if (SUBSCRIBED_PHONE_NUMBERS.includes(phoneNumber)) {
+    return { success: false, message: "이미 가입된 번호입니다." };
+  } else {
+    // 가입되지 않은 전화번호면 인증 성공
+    return { success: true, message: "전화번호 인증 완료!" };
   }
-  return { success: false };
 };
 
-// 회원가입 API
-export const registerAPI = async (data: RegisterUser) => {
-  console.log("서버에 전송되는 회원가입 데이터:", data);
-
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  // email이 이미 존재하면 실패, 그 외에는 성공
-  if (data.email === "abc@email.com") {
-    return { success: false, message: "이미 등록된 이메일입니다." };
-  }
-  return { success: true, message: "회원가입 성공" };
+// 회원가입 API --------------------
+export const signupInstructorAPI = (data: SignupInstructorUser) => {
+  return axiosClient.post("/auth/instructor/signup", data);
 };
 
-// 로그인 API
-export const loginAPI = async (data: LoginUser) => {
-  console.log("서버에 전송되는 로그인 데이터:", data);
+export const signupAssistantAPI = (data: SignupAssistantUser) => {
+  return axiosClient.post("/auth/assistant/signup", data);
+};
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+export const signupLearnerAPI = (
+  data: SignupStudentUser | SignupParentUser
+) => {
+  return axiosClientSVC.post("/auth/student/signup", data);
+};
 
-  // 임시 조건: 이메일이 "fail"이면 로그인 실패 - 테스트용
-  if (data.email === "fail@naver.com") {
-    return {
-      success: false,
-      message: "이메일 또는 비밀번호가 올바르지 않습니다.",
-    };
-  }
-
-  return { success: true, message: "로그인 성공" };
+// 로그인 API ---------------------
+export const signinAPI = (data: LoginUser, role: "MGMT" | "SVC" = "MGMT") => {
+  const client = role === "MGMT" ? axiosClient : axiosClientSVC;
+  return client.post("/auth/signin", data);
+};
+// 로그아웃 API ---------------------
+export const signoutAPI = (role: "MGMT" | "SVC" = "MGMT") => {
+  const client = role === "MGMT" ? axiosClient : axiosClientSVC;
+  return client.post("/auth/signout");
+};
+// 세션 조회 API ---------------------
+export const getSessionAPI = (role: "MGMT" | "SVC" = "MGMT") => {
+  const client = role === "MGMT" ? axiosClient : axiosClientSVC;
+  return client.get("/auth/session");
 };

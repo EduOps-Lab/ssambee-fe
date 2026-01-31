@@ -41,7 +41,7 @@ export default function StudentsListPage() {
 
   const [query, setQuery] = useState<StudentListQuery>({
     keyword: "",
-    grade: null,
+    schoolYear: null,
     status: null,
     lectureId: null,
   });
@@ -180,13 +180,13 @@ export default function StudentsListPage() {
           />
           <SelectBtn
             className="max-w-[120px]"
-            value={query.grade ?? "all"}
+            value={query.schoolYear ?? "all"}
             placeholder="학년 선택"
             options={GRADE_SELECT_OPTIONS}
             onChange={(value) =>
               setQuery((prev) => ({
                 ...prev,
-                grade: value === "all" ? null : value,
+                schoolYear: value === "all" ? null : value,
               }))
             }
           />

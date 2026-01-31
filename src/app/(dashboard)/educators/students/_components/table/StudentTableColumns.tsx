@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import MiniLabel from "@/components/common/label/RoundStatusLabel";
+import StatusLabel from "@/components/common/label/StatusLabel";
 import SelectBtn from "@/components/common/button/SelectBtn";
 import { STATUS_SETTING_OPTIONS } from "@/constants/students.default";
 import { StudentEnrollment } from "@/types/students.type";
@@ -61,7 +61,7 @@ export const StudentTableData = ({
   {
     key: "enrollment",
     render: (row: StudentEnrollment) => (
-      <MiniLabel
+      <StatusLabel
         color={
           row.status === "재원"
             ? "green"
@@ -71,7 +71,7 @@ export const StudentTableData = ({
         }
       >
         {row.status}
-      </MiniLabel>
+      </StatusLabel>
     ),
   },
   {
@@ -92,14 +92,14 @@ export const StudentTableData = ({
     key: "school",
     render: (row: StudentEnrollment) => (
       <span className="text-sm whitespace-nowrap">
-        {row.school} / {row.grade}
+        {row.school} / {row.schoolYear}
       </span>
     ),
   },
   {
     key: "phoneNumber",
     render: (row: StudentEnrollment) => (
-      <span className="text-sm whitespace-nowrap">{row.phone}</span>
+      <span className="text-sm whitespace-nowrap">{row.phoneNumber}</span>
     ),
   },
   {

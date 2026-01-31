@@ -8,12 +8,12 @@ import AuthLayout from "@/components/auth/layout/AuthLayout";
 import RoleSelectorBtn from "@/components/auth/button/RoleSelectorBtn";
 
 const LEARNER_ROLES: RoleOption<LearnerRole>[] = [
-  { label: "학생", value: "student" },
-  { label: "학부모", value: "parent" },
+  { label: "학생", value: "STUDENT" },
+  { label: "학부모", value: "PARENT" },
 ];
 
 export default function LearnersLoginPage() {
-  const [selectedRole, setSelectedRole] = useState<LearnerRole>("student");
+  const [selectedRole, setSelectedRole] = useState<LearnerRole>("STUDENT");
 
   return (
     <AuthLayout

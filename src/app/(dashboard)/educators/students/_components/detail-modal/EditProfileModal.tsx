@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -39,11 +39,15 @@ export default function EditProfileModal({
     defaultValues: studentData,
   });
 
-  // 모달 열릴 때 폼 데이터만 reset (state 변경 X)
+  // 이전 모달 상태 추적
+  const prevIsOpenRef = useRef(false);
+  // 모달 열릴 때만 studentData로 폼 초기화
+  // 모달이 열린 상태에서 studentData가 변경되면 편집 중인 내용이 날아갈 수 있기 때문
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevIsOpenRef.current) {
       reset(studentData);
     }
+    prevIsOpenRef.current = isOpen;
   }, [isOpen, studentData, reset]);
 
   const handleEditToggle = () => {
@@ -128,30 +132,30 @@ export default function EditProfileModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="grade">학년</Label>
+                <Label htmlFor="schoolYear">학년</Label>
                 <Input
-                  id="grade"
+                  id="schoolYear"
                   className="w-full"
                   disabled={!isEditMode}
-                  {...register("grade")}
+                  {...register("schoolYear")}
                   placeholder="학년"
                 />
-                {errors.grade && (
-                  <p className="text-red-500">{errors.grade.message}</p>
+                {errors.schoolYear && (
+                  <p className="text-red-500">{errors.schoolYear.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">연락처</Label>
+                <Label htmlFor="phoneNumber">연락처</Label>
                 <Input
-                  id="phone"
+                  id="phoneNumber"
                   className="w-full"
                   disabled={!isEditMode}
-                  {...register("phone")}
+                  {...register("phoneNumber")}
                   placeholder="연락처"
                 />
-                {errors.phone && (
-                  <p className="text-red-500">{errors.phone.message}</p>
+                {errors.phoneNumber && (
+                  <p className="text-red-500">{errors.phoneNumber.message}</p>
                 )}
               </div>
 

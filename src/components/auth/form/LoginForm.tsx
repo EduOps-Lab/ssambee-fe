@@ -4,12 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
 
 import { loginSchema } from "@/validation/auth.validation";
-import { LoginFormData, LoginUser, Role } from "@/types/auth.type";
+import { LoginFormData, Role } from "@/types/auth.type";
 import { LOGIN_FORM_DEFAULTS } from "@/constants/auth.defaults";
-import { loginAPI } from "@/services/auth.service";
+import { useAuth } from "@/hooks/useAuth";
 
 type LoginFormProps = {
   selectedRole: Role;
@@ -17,6 +16,7 @@ type LoginFormProps = {
 
 export default function LoginForm({ selectedRole }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const { signin, loading } = useAuth();
 
   const {
     register,
@@ -29,30 +29,9 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
     defaultValues: LOGIN_FORM_DEFAULTS,
   });
 
-  // 로그인 mutation
-  const loginMutation = useMutation({
-    mutationFn: (formData: LoginUser) => loginAPI(formData),
-    onSuccess: (data) => {
-      if (data.success) {
-        alert("로그인 성공!");
-
-        // TODO: 로그인 성공 후 라우팅
-        // router.push("/(dashboard)/educators");
-      } else {
-        alert(data.message || "로그인 실패");
-      }
-    },
-    onError: (err) => {
-      console.error(err);
-      alert("서버 오류 발생");
-    },
-  });
-
-  const isLoading = loginMutation.isPending;
-
   // 로그인 버튼 - role 데이터 포함
-  const onSubmit = (data: LoginFormData) => {
-    loginMutation.mutate({ ...data, role: selectedRole });
+  const onSubmit = async (data: LoginFormData) => {
+    await signin({ ...data, userType: selectedRole });
   };
 
   // 구글 로그인
@@ -64,7 +43,6 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* 이메일 입력 */}
         <div>
           <label
             htmlFor="email"
@@ -89,7 +67,6 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
           )}
         </div>
 
-        {/* 비밀번호 입력 */}
         <div>
           <label
             htmlFor="password"
@@ -125,36 +102,33 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
           )}
         </div>
 
-        {/* 로그인 상태 유지 */}
         <div className="flex items-center">
           <input
-            id="keepLoggedIn"
+            id="rememberMe"
             type="checkbox"
-            {...register("keepLoggedIn")}
+            {...register("rememberMe")}
             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
           />
-          <label htmlFor="keepLoggedIn" className="ml-2 text-sm text-gray-700">
+          <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-700">
             로그인 상태 유지
           </label>
         </div>
 
-        {/* 로그인 버튼 */}
         <button
           type="submit"
-          disabled={!isValid || isLoading}
+          disabled={!isValid || loading}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-            !isValid
+            !isValid || loading
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
           }`}
           aria-label="로그인"
-          aria-disabled={!isValid || isLoading}
+          aria-disabled={!isValid || loading}
         >
-          {isLoading ? "로그인 중..." : "로그인"}
+          {loading ? "로그인 중..." : "로그인"}{" "}
         </button>
       </form>
 
-      {/* 구분선 */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-gray-300"></div>
@@ -164,7 +138,6 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
         </div>
       </div>
 
-      {/* 구글 로그인 버튼 */}
       <button
         type="button"
         onClick={handleGoogleLogin}
@@ -192,7 +165,6 @@ export default function LoginForm({ selectedRole }: LoginFormProps) {
         구글로 로그인
       </button>
 
-      {/* 문의 */}
       <div className="text-center text-sm text-gray-600">
         관리자 권한이 필요하신가요?{" "}
         <Link

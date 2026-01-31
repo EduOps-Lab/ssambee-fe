@@ -1,9 +1,11 @@
-import { ReactNode } from "react";
+import { RouteGuard } from "@/components/guard/guards";
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export default function Layout({ children }: LayoutProps) {
-  return <>{children}</>;
+export default function LearnersLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <RouteGuard allowedRoles={["STUDENT", "PARENT"]}>{children}</RouteGuard>
+  );
 }
